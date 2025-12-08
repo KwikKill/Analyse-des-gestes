@@ -1,0 +1,2 @@
+AVAILABLE CLASSES
+#Left#Right#Up#Down#NewLeft#NewRight#Junp#Ability#SwitchClass#leftped#rightdep#saut#forward#backward#switch#GoRight#GoLeft#GoFront#GoBack#PointLeft#PointRight#PointFront#PointBack#Grab#Change#OK#Saut2#Saut3

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_Scenes/Main.unity
+    guid: 3f08fddc188e6ce4db467b2be703ac46
+  - enabled: 0
+    path: Assets/AppTrans/Scenes/TestAndSetting.unity
+    guid: 316b4af7202dd9041b0b76e7e7dc00e7
+  - enabled: 0
+    path: Assets/AppTrans/Scenes/ReaffectAction.unity
+    guid: fbccd1cdd027364459cfb3f0b97ac618
+  - enabled: 0
+    path: Assets/AppTrans/Scenes/ClassifierEvaluation.unity
+    guid: b7587cc1432c10443b30d45589ae050c
+  - enabled: 0
+    path: Assets/AppTrans/Scenes/CreateGesture.unity
+    guid: f6b2b4e5c340aa3409c287197457fef2
+  - enabled: 0
+    path: Assets/AppTrans/Scenes/MainMenu.unity
+    guid: 26000086c182fa94897f8f48ec6f4f35
+  m_configObjects: {}

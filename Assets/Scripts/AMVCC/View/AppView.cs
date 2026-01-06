@@ -16,6 +16,7 @@ namespace AMVCC
         public TextMeshProUGUI LevelIndicator;
         public TextMeshProUGUI ClassPlayerIndicator;
         public TextMeshProUGUI AbilityPlayerIndicator;
+        public Text text;
 
 
         private void Update()
@@ -32,7 +33,10 @@ namespace AMVCC
             //TODO
             //you will have to use and update App.Model.Game.Reco (which is true when a class is recognized)
             //you will need the current recognized class : App.Model.Game.ClassRecognized
-            
+            if (App.Model.Game.Reco) {
+                text.text = App.Model.Game.ClassRecognized;
+                App.Model.Game.Reco = false;
+            }
 
         }
 

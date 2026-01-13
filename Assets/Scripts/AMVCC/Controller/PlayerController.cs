@@ -9,6 +9,7 @@ namespace AMVCC.Controller
     public class PlayerController : AppElement
     {
         public float Speed = 5f;
+        public float JumpSpeed = 5f;
         private CharacController _currentCharacterController;
 
         public List<CharacController> CharacControllers;
@@ -55,6 +56,7 @@ namespace AMVCC.Controller
         private void Update()
         {
             App.Model.Game.Player.Speed = Speed; // Update the model with Speed displayed in the inspector.
+            App.Model.Game.Player.JumpSpeed = JumpSpeed;
         }
 
         public void Jump()

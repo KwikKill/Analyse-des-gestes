@@ -15,6 +15,12 @@ namespace AMVCC.View
 
         public Color[] CharacterClassColor;
         
+        private float _jumpPreparationTimer = 0f;
+        private const float JUMP_PREPARATION_DURATION = 1f;
+        private float _jumpHeight = 2f;
+        private Vector3 _jumpStartPosition;
+        private float _jumpProgress = 0f;
+        
         private void Start()
         {
             _mat = GetComponentsInChildren<Renderer>()[1].sharedMaterial;
@@ -26,11 +32,25 @@ namespace AMVCC.View
             // Orient player as long as he is not grabbing an object
             if (!(_player.CharacterClass is Fighter && ((Fighter) _player.CharacterClass).IsGrabbing))
             {
-                transform.LookAt(App.Model.Game.Player.Destination);    
+                transform.LookAt(App.Model.Game.Player.Destination);
             }
-            
-            transform.position = Vector3.MoveTowards(transform.position,
+
+            if (Animator.GetBool("Jump")) {
+                Animator.SetBool("Jump", transform.position != _player.Destination);
+
+                if (_jumpPreparationTimer > 0) {
+                    _jumpPreparationTimer -= Time.deltaTime;
+                } else {
+                    transform.position = Vector3.MoveTowards(transform.position,
+                    _player.Destination, Time.deltaTime * _player.JumpSpeed);
+                }  
+            } else {
+                Animator.SetBool("IsWalking", transform.position != _player.Destination);
+                Animator.SetBool("Jump", false);
+
+                transform.position = Vector3.MoveTowards(transform.position,
                 _player.Destination, Time.deltaTime * _player.Speed);
+            }
         }
 
         /// <summary>
@@ -54,6 +74,8 @@ namespace AMVCC.View
         /// </summary>
         public void Jump()
         {
+            Animator.SetBool("Jump", true);
+            _jumpPreparationTimer = JUMP_PREPARATION_DURATION;
         }
 
         /// <summary>

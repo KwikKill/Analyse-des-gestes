@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1109,13 +1109,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
-  m_LocalRotation: {x: 0.3420201, y: 0, z: 0, w: 0.9396927}
-  m_LocalPosition: {x: 5, y: 3.27, z: -3}
+  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
+  m_LocalPosition: {x: 8.9, y: 4.99, z: -8.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 40, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!1 &642941854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1636,7 +1636,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Levels:
-  - {fileID: 7826737950437474642, guid: a6d2f0ff53aacb642bdfbebfd10cd9b9, type: 3}
+  - {fileID: 5322550373282495325, guid: 64a04b8384f69da4dac078398fe7bfce, type: 3}
+  - {fileID: 8696890773060378951, guid: bc6267514341fca4c9a22497fb8acd9e, type: 3}
+  - {fileID: 9008803478328834173, guid: e797ae0edd86450479265aafb803c6f7, type: 3}
+  - {fileID: 3755316177740552060, guid: 0aa631a06886dc348bf683f075e2adce, type: 3}
   UseRecoManager: 0
 --- !u!114 &1382249709
 MonoBehaviour:
@@ -1729,6 +1732,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2997841136221807220, guid: 5d17dff65e14bca46af2e9b49db19a63,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 186ae86c6567f8247b2431097832186e, type: 2}
+    - target: {fileID: 2997841136221807220, guid: 5d17dff65e14bca46af2e9b49db19a63,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2997841136050201983, guid: 5d17dff65e14bca46af2e9b49db19a63,
+        type: 3}
+      propertyPath: SwitchClassParticles
+      value: 
+      objectReference: {fileID: 3338744553697345081, guid: fbd34597ec214c3488102527da850f1b,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d17dff65e14bca46af2e9b49db19a63, type: 3}
 --- !u!4 &1470282436 stripped
@@ -2249,7 +2268,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60e0de3523f07164a8cf7b49a5971e7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 5
+  Speed: 3
+  JumpSpeed: 5
   CharacControllers:
   - {fileID: 1713577157}
   - {fileID: 1713577158}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using AMVCC.Model.PlayerPkg;
 using Leap.Unity;
 using UnityEngine;
@@ -21,6 +22,10 @@ namespace AMVCC.Controller
         private Vector3 _boxPosition;
         private Vector3 _boxScale;
 
+        // To block the player
+        private bool _isBusy = false;
+        private Vector3 _targetBlockPos;
+
 
         private void Awake()
         {
@@ -41,8 +46,6 @@ namespace AMVCC.Controller
 
         private void Start()
         {
-           
-            
             if(CharacControllers.Count==0)
                 throw new Exception("Need at least 1 character controller");
             if (App.View.Player == null)
@@ -61,6 +64,9 @@ namespace AMVCC.Controller
 
         public void Jump()
         {
+            if (_isBusy)
+                return;
+
             Vector3 desiredDestination = App.Model.Game.Player.Destination
                                          +new Vector3(Seuil(App.View.Player.transform.forward.x),
                                              App.View.Player.transform.forward.y,
@@ -85,6 +91,9 @@ namespace AMVCC.Controller
         /// <param name="direction">Ex: Vector3.forward/left/right...</param>
         public void MovePlayer(Vector3 direction)
         {
+            if (_isBusy)
+                return;
+
             Player p = App.Model.Game.Player;
 
             Vector3 desiredDestination = p.Destination + direction;
@@ -148,19 +157,68 @@ namespace AMVCC.Controller
         {
             Log("SwitchClass");
             int indexOfNextClass = (CharacControllers.IndexOf(_currentCharacterController) + 1) % (CharacControllers.Count);
+
             _currentCharacterController=CharacControllers[indexOfNextClass];
             App.Model.Game.Player.CharacterClass = _currentCharacterController.GetCharactClass();
             App.View.Player.SetColorPlayer(indexOfNextClass);
+
+            App.View.Player.PlaySwitchClassEffect();
+
             App.View.UpdateKindPlayerAndAbility();
 
         }
 
         public void Ability1()
         {
-            _currentCharacterController.Ability();
-        }
+            if (_isBusy)
+                return;
 
-      
+            if (_currentCharacterController is MageController)
+            {
+                _isBusy = true;
+                App.View.Player.Fireball();
+                StartCoroutine(MageAbilityRoutine(1f));
+            }
+            else if (_currentCharacterController is NinjaController)
+            {
+                _isBusy = true;
+                App.View.Player.ShurikenThrow();
+                StartCoroutine(NinjaAbilityRoutine(0.5f));
+            }
+            else
+            {
+                _currentCharacterController.Ability();
+            }
+
+        }
+        private IEnumerator MageAbilityRoutine(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+ 
+            if (_currentCharacterController is MageController mage)
+            {
+                mage.ExecuteFireballEffect();
+            }
+
+            yield return new WaitForSeconds(0.6f);
+
+            _isBusy = false;
+        }
+        private IEnumerator NinjaAbilityRoutine(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+
+            if (_currentCharacterController is NinjaController ninja)
+            {
+                ninja.ExecuteThrowEffect();
+            }
+
+            yield return new WaitForSeconds(1.1f);
+
+            _isBusy = false;
+        }
 
         private void OnDrawGizmos()
         {

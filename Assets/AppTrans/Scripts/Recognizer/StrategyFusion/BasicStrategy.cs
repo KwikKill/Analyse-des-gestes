@@ -39,6 +39,7 @@ namespace AppTrans.Scripts.Recognizer.StrategyFusion
             {
                 _appClassesLearned = RecoManager.GetInstance().ParamRecoManager.GetClassesLearnt();
                 _status = RecoManager.GetInstance().State; //to prevent change of classifier
+                _resetedHisto = false;
                 ResetHistogram();
             }
 
@@ -76,7 +77,7 @@ namespace AppTrans.Scripts.Recognizer.StrategyFusion
             bool decisionMade = false; //To update if the decision is taken
             string bestClass = null; //To update if the decision is taken
 
- 
+
             //TODO : complete the code here
             //You will have to loop over the "scores" variable (which is already filled) in the code above
             //to fill the "histogrammes variables"
@@ -85,7 +86,100 @@ namespace AppTrans.Scripts.Recognizer.StrategyFusion
             //and if it's the case, update the 'decisionMade' and 'bestClass' variable
 
             // END TODO
+            // Parcourir les scores pour chaque classifieur
+            foreach (var classifierScores in scores)
+            {
+                string classifierId = classifierScores.Key; // L'ID du classifieur
 
+                // Trier les scores par ordre décroissant
+                var sortedScores = classifierScores.Value.OrderByDescending(x => x.Value).ToList();
+
+                if (sortedScores.Count < 2)
+                    continue; // Il faut au moins 2 classes pour calculer β
+
+                // Classe actuellement prédite (meilleur score)
+                string predictedClass = sortedScores[0].Key;  // Predicted_i
+                double predictedScore = sortedScores[0].Value;
+                double secondBestScore = sortedScores[1].Value;
+
+                // Calcul de β (différence entre Predicted_i et le second meilleur)
+                double beta = predictedScore - secondBestScore;
+
+                // Mise à jour de chaque entrée j de l'histogramme
+                foreach (var scoreEntry in classifierScores.Value)
+                {
+                    string jthClass = scoreEntry.Key;  // jème classe
+                    double jthScore = scoreEntry.Value; // score de la jème classe
+
+                    // Calcul de γ pour la jème entrée
+                    // γ = score(Predicted_i) - score(jème classe)
+                    double gamma = predictedScore - jthScore;
+
+                    // Mise à jour de l'histogramme His_i[j] += γ
+                    if (histogrammes.ContainsKey(classifierId) &&
+                        histogrammes[classifierId].ContainsKey(jthClass))
+                    {
+                        histogrammes[classifierId][jthClass] += gamma;
+                    }
+                }
+
+                // Vérification des seuils pour la décision
+                // Si β ≥ THETA → décision immédiate (forte confiance)
+                if (beta >= THETA)
+                {
+                    decisionMade = true;
+                    bestClass = predictedClass;
+                    break;
+                }
+
+                // Si histogramme de la classe prédite ≥ PSI → décision par accumulation
+                if (histogrammes.ContainsKey(classifierId) &&
+                    histogrammes[classifierId].ContainsKey(predictedClass))
+                {
+                    if (histogrammes[classifierId][predictedClass] >= PSI)
+                    {
+                        decisionMade = true;
+                        bestClass = predictedClass;
+                        break;
+                    }
+                }
+            }
+            /*foreach (var classScores in scores)
+            {
+                string className = classScores.Key;
+
+                // Trier les scores pour trouver les deux meilleurs
+                var sortedScores = classScores.Value.OrderByDescending(x => x.Value).ToList();
+                if (sortedScores.Count < 2)
+                    continue; // S'assurer qu'il y a au moins deux classes pour calculer β
+
+                string predictedClass = sortedScores[0].Key; // Classe prédite (Predicted_i)
+                double predictedScore = sortedScores[0].Value;
+                double secondBestScore = sortedScores[1].Value; // Deuxième meilleur score
+
+                // Calcul de β
+                double beta = predictedScore - secondBestScore;
+
+                // Mettre à jour les histogrammes pour chaque classe
+                foreach (var entry in classScores.Value)
+                {
+                    string targetClass = entry.Key;
+                    double targetScore = entry.Value;
+
+                    // Calcul de γ
+                    double gamma = predictedScore - targetScore;
+
+                    // Mise à jour de l'histogramme
+                    histogrammes[className][targetClass] += gamma;
+
+                    // Vérification des seuils
+                    if (histogrammes[className][targetClass] >= PSI || beta >= THETA)
+                    {
+                        decisionMade = true;
+                        bestClass = className;
+                    }
+                }
+            }*/
 
             Dictionary<string, Dictionary<string, double>> histograms = histogrammes;
 
@@ -94,6 +188,7 @@ namespace AppTrans.Scripts.Recognizer.StrategyFusion
                 //We ask to the classifier to reset the curvilinear distance because we have taken a decision
                 RecoManager.GetInstance().ResetCurDi();
                 histograms = new Dictionary<string, Dictionary<string, double>>(histogrammes); //make a copy
+                _resetedHisto = false;
                 ResetHistogram();
                 _resetedHisto = true;
             }

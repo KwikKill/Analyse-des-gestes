@@ -10,19 +10,20 @@ namespace AMVCC.Controller
         /// </summary>
         public override void Ability()
         {
+            App.View.Player.Fireball();
+        }
+        public void ExecuteFireballEffect()
+        {
             var playerTransform = App.View.Player.transform;
             Vector3 forwardPos = playerTransform.position + playerTransform.forward;
             Log(forwardPos);
 
-            // Retrieve the colliders with the Obstacle mask that are in front of the player.
             Collider[] colliders = Physics.OverlapSphere(forwardPos + Vector3.up * 0.5f, 0.25f, LayerMask.GetMask("Obstacle"));
             foreach (Collider col in colliders)
             {
                 Destroy(col.gameObject);
             }
         }
-
-      
 
         public override CharacterClass GetCharactClass()
         {

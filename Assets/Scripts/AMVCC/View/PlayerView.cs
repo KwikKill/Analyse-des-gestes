@@ -13,13 +13,12 @@ namespace AMVCC.View
         
         public Animator Animator;
 
+        public GameObject SwitchClassParticles;
+
         public Color[] CharacterClassColor;
         
         private float _jumpPreparationTimer = 0f;
         private const float JUMP_PREPARATION_DURATION = 1f;
-        private float _jumpHeight = 2f;
-        private Vector3 _jumpStartPosition;
-        private float _jumpProgress = 0f;
         
         private void Start()
         {
@@ -35,8 +34,8 @@ namespace AMVCC.View
                 transform.LookAt(App.Model.Game.Player.Destination);
             }
 
-            if (Animator.GetBool("Jump")) {
-                Animator.SetBool("Jump", transform.position != _player.Destination);
+            if (Animator.GetBool("IsJumping")) {
+                Animator.SetBool("IsJumping", transform.position != _player.Destination);
 
                 if (_jumpPreparationTimer > 0) {
                     _jumpPreparationTimer -= Time.deltaTime;
@@ -46,7 +45,7 @@ namespace AMVCC.View
                 }  
             } else {
                 Animator.SetBool("IsWalking", transform.position != _player.Destination);
-                Animator.SetBool("Jump", false);
+                Animator.SetBool("IsJumping", false);
 
                 transform.position = Vector3.MoveTowards(transform.position,
                 _player.Destination, Time.deltaTime * _player.Speed);
@@ -69,12 +68,22 @@ namespace AMVCC.View
             }
         }
 
+        public void PlaySwitchClassEffect()
+        {
+            if (SwitchClassParticles != null)
+            {
+                Vector3 spawnPosition = transform.position + new Vector3(0, 1f, 0);
+                GameObject particles = Instantiate(SwitchClassParticles, spawnPosition, Quaternion.identity);
+                Destroy(particles, 2f);
+            }
+        }
+
         /// <summary>
         /// Do the jump animation
         /// </summary>
         public void Jump()
         {
-            Animator.SetBool("Jump", true);
+            Animator.SetBool("IsJumping", true);
             _jumpPreparationTimer = JUMP_PREPARATION_DURATION;
         }
 
@@ -88,14 +97,25 @@ namespace AMVCC.View
             {
                 ICanGrab f = (ICanGrab) _player.CharacterClass;
                 bool isGrabbing = f.IsGrabbing;
-
+                int grabbingLayerIndex = Animator.GetLayerIndex("Grabbing");
+                if (grabbingLayerIndex != -1)
+                {
+                    Animator.SetLayerWeight(grabbingLayerIndex, isGrabbing ? 1.0f : 0.0f);
+                }
             }
             else
             {
                 Log("ActualiseGrab() should not be called atm.", 4);
             }
         }
-        
-        
+        public void Fireball()
+        {
+            Animator.SetTrigger("Destroy");
+        }
+
+        public void ShurikenThrow()
+        {
+            Animator.SetTrigger("Shuriken");
+        }
     }
 }

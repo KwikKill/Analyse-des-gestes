@@ -12,11 +12,14 @@ namespace AMVCC.Controller
 
         public override void Ability()
         {
-            ThrowableObject throwableObject = Instantiate(ThrowableObject, LaunchPoint.position, App.View.Player.transform.rotation,App.View.transform);
-            Destroy (throwableObject.gameObject, 7.0f);
+            App.View.Player.ShurikenThrow();
         }
 
-       
+        public void ExecuteThrowEffect()
+        {
+            ThrowableObject throwableObject = Instantiate(ThrowableObject, LaunchPoint.position, App.View.Player.transform.rotation, App.View.transform);
+            Destroy(throwableObject.gameObject, 7.0f);
+        }
 
         public override CharacterClass GetCharactClass()
         {

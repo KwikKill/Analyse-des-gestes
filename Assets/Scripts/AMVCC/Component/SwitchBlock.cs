@@ -37,7 +37,7 @@ namespace AMVCC.Component
         {
  
             //TODO
-            //AppNotification.ActivSwitch(IdSwitch);
+            AppNotification.ActivSwitch(IdSwitch);
             
             _renderer.material.SetColor("_Color",_initMaterialColor);
         }
